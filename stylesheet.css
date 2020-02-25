@@ -59,6 +59,7 @@ body {
 #keyboard {
     background-color:orange;
 }
+
 .command, .number, .operation {
     display:inline-flex;
     align-items: center;
@@ -82,9 +83,11 @@ body {
 .command {
     background-color:#aaa;
 }
+
 .operation {
     background-color: tomato;
 }
+
 .command:hover, .number:hover, .operation:hover, #equals:hover {
     background-color: plum;
 }
