@@ -1,0 +1,94 @@
+body {
+    margin:0px;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    font-family: Calibri, sans-serif;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#contend {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: #333;
+}
+
+@media(max-device-aspect-ratio: 4/7) {
+    #contend {
+        width: 100vw;
+        height: calc(100vw / 4 * 7);
+        --block: 100vw / 4;
+    }
+}
+
+@media(min-device-aspect-ratio: 4/7) {
+    #contend {
+        height: 100vh;
+        width: calc(100vh / 7 * 4);
+        --block: 100vh / 7;
+    }
+}
+
+.display {
+    display:inline-flex;
+    height: calc(1 * var(--block));
+    width: calc(4 * var(--block));
+    background-color: palegreen;
+    align-items: flex-end;
+    box-sizing: border-box;
+    padding: 0px calc(0.1 * var(--block));
+}
+
+#input-screen {
+    justify-content: flex-start;
+    font-family: monospace;
+    font-size: calc(0.3 * var(--block));
+}
+
+#output-screen {
+    justify-content: flex-end;
+    font-size: calc(0.4 * var(--block));
+}
+
+#keyboard {
+    background-color:orange;
+}
+.command, .number, .operation {
+    display:inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(1 * var(--block));
+    width: calc(1 * var(--block));
+    margin:0px;
+    padding:0px;
+    font-size: calc(0.3 * var(--block));
+}
+
+#equals {
+    width: calc(2 * var(--block));
+    background-color: springgreen;
+}
+
+#bkspc {
+    width: calc(2 * var(--block));
+}
+
+.command {
+    background-color:#aaa;
+}
+.operation {
+    background-color: tomato;
+}
+.command:hover, .number:hover, .operation:hover, #equals:hover {
+    background-color: plum;
+}
+
+#ac {
+    display:none;
+}
