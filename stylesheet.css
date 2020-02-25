@@ -8,6 +8,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    box-sizing: border-box;
 }
 
 #contend {
@@ -16,7 +17,7 @@ body {
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: #333;
+    background-color:palegreen;
 }
 
 @media(max-device-aspect-ratio: 4/7) {
@@ -93,10 +94,6 @@ body {
     background-color: springgreen;
 }
 
-#bkspc {
-    width: calc(2 * var(--block));
-}
-
 .command {
     background-color:#aaa;
 }
@@ -109,10 +106,6 @@ body {
     background-color: plum;
 }
 
-#ac {
-    display:none;
-}
-
 footer {
     width: calc(4 * var(--block));
     height: calc(0.5 * var(--block));
@@ -121,11 +114,12 @@ footer {
     display:inline-flex;
     justify-content: center;
     align-items: center;
-
+    background-color: #333;
 }
 
 footer a {
     font-weight: bold;
+
 }
 a:visited {
     color: #fff;
