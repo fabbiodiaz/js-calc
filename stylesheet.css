@@ -43,6 +43,15 @@ body {
     align-items: flex-end;
     box-sizing: border-box;
     padding: 0px calc(0.1 * var(--block));
+
+    /* texto não selecionável */
+    -webkit-touch-callout: none;  /* iPhone OS, Safari */
+    -webkit-user-select: none;    /* Chrome, Safari 3 */
+    -khtml-user-select: none;     /* Safari 2 */
+    -moz-user-select: none;       /* Firefox */
+    -ms-user-select: none;        /* IE10+ */
+    user-select: none;            /* Possível implementação no futuro */
+    /* cursor: default; */
 }
 
 #input-screen {
@@ -69,6 +78,14 @@ body {
     margin:0px;
     padding:0px;
     font-size: calc(0.3 * var(--block));
+
+    /* texto não selecionável */
+    -webkit-touch-callout: none;  /* iPhone OS, Safari */
+    -webkit-user-select: none;    /* Chrome, Safari 3 */
+    -khtml-user-select: none;     /* Safari 2 */
+    -moz-user-select: none;       /* Firefox */
+    -ms-user-select: none;        /* IE10+ */
+    user-select: none;            /* Possível implementação no futuro */
 }
 
 #equals {
