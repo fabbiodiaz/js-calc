@@ -22,7 +22,7 @@ body {
 @media(max-device-aspect-ratio: 4/7) {
     #contend {
         width: 100vw;
-        height: calc(100vw / 4 * 7);
+        height: calc(100vw / 4 * 7.5);
         --block: 100vw / 4;
     }
 }
@@ -30,8 +30,8 @@ body {
 @media(min-device-aspect-ratio: 4/7) {
     #contend {
         height: 100vh;
-        width: calc(100vh / 7 * 4);
-        --block: 100vh / 7;
+        width: calc(100vh / 7.5 * 4);
+        --block: 100vh / 7.5;
     }
 }
 
@@ -111,4 +111,22 @@ body {
 
 #ac {
     display:none;
+}
+
+footer {
+    width: calc(4 * var(--block));
+    height: calc(0.5 * var(--block));
+    color:#fff;
+    font-size: calc(0.2 * var(--block));
+    display:inline-flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+footer a {
+    font-weight: bold;
+}
+a:visited {
+    color: #fff;
 }
