@@ -20,19 +20,19 @@ body {
     background-color:palegreen;
 }
 
-@media(max-device-aspect-ratio: 4/7) {
+@media(max-device-aspect-ratio: 8/13) {
     #contend {
         width: 100vw;
-        height: calc(100vw / 4 * 7.5);
+        height: calc(100vw / 4 * 6.5);
         --block: 100vw / 4;
     }
 }
 
-@media(min-device-aspect-ratio: 4/7) {
+@media(min-device-aspect-ratio: 8/13) {
     #contend {
         height: 100vh;
-        width: calc(100vh / 7.5 * 4);
-        --block: 100vh / 7.5;
+        width: calc(100vh / 6.5 * 4);
+        --block: 100vh / 6.5;
     }
 }
 
@@ -44,7 +44,10 @@ body {
     align-items: flex-end;
     box-sizing: border-box;
     padding: 0px calc(0.1 * var(--block));
-
+    justify-content: flex-end;
+    font-size: calc(0.78 * var(--block));
+    font-family: 'Oxanium';
+    
     /* texto não selecionável */
     -webkit-touch-callout: none;  /* iPhone OS, Safari */
     -webkit-user-select: none;    /* Chrome, Safari 3 */
@@ -53,17 +56,6 @@ body {
     -ms-user-select: none;        /* IE10+ */
     user-select: none;            /* Possível implementação no futuro */
     /* cursor: default; */
-}
-
-#input-screen {
-    justify-content: flex-start;
-    font-family: monospace;
-    font-size: calc(0.3 * var(--block));
-}
-
-#output-screen {
-    justify-content: flex-end;
-    font-size: calc(0.4 * var(--block));
 }
 
 #keyboard {
@@ -79,7 +71,7 @@ body {
     margin:0px;
     padding:0px;
     font-size: calc(0.3 * var(--block));
-
+    font-family: 'Oxanium';
     /* texto não selecionável */
     -webkit-touch-callout: none;  /* iPhone OS, Safari */
     -webkit-user-select: none;    /* Chrome, Safari 3 */
