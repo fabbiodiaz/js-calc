@@ -9,6 +9,7 @@ body {
     justify-content: center;
     flex-wrap: wrap;
     box-sizing: border-box;
+    background-color: #000;
 }
 
 #contend {

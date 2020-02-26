@@ -1,67 +1,129 @@
 //default display
 const display = document.getElementById("display")
 
-//default arithimetic operations
+// Random acess memory
+// Registers : float point numbers, only 8 digits or less are avaliable
+// flag : String
+const memory = { flag:null, xRegister:0, yRegister:0, displayLimit:999,
+
+    getFlag: () => memory.flag,
+    setFlag: flag => memory.flag = flag,
+    getX: () => memory.xRegister,
+    setX: newX => memory.xRegister = newX,
+    getY: () => memory.yRegister,
+    setY: newY => memory.yRegister = newY,
+    clear:() => {
+        memory.flag = null
+        memory. xRegister = 0
+        memory.yRegister = 0
+    },
+    getDisplayLimit: () => memory.displayLimit,
+    setDisplayLimit: newDisplayLimit => displayLimit = newDisplayLimit
+    
+}
+
+//default operations
 operations = {
+
+    // data reciever
+    input:(data,type) => {
+        if (type == "number") {
+            operations.inputNumber(data)
+        }
+        if (type == "operation") {
+            operations.inputFlag(data)
+        }
+        if (type == "command") {
+            operations[data]()
+        }
+        operations.displayInput(memory.getX(),display)
+    },
+    // aux functions
+    memoryStatus: () => [!!memory.getFlag(),!!memory.getX(),!!memory.getY()],
+    memoryUsage: () => [parseInt(!!memory.getFlag()), memory.getX().toString().length, memory.getY().toString().length],
+
+    // arithimetic operations
     plus:(firstNum=0,secondNum=0) => firstNum + secondNum,
     minimus: (firstNum=0,secondNum=0) => firstNum - secondNum,
     mult: (firstNum=1,secondNum=1) => firstNum * secondNum,
     divide: (firstNum=1,secondNum=1) => firstNum / secondNum,
-    equals:(flag,firstNum,secondNum) => operations[flag](firstNum,secondNum).toString().length > 8 ? null : operations[flag](firstNum,secondNum)
-}
-
-// Random acess memory and its methods
-const memory = { flag:"", xRegister:"", yRegister:"",
-
-inputNumber:data => {
     
-    if (memory.flag && !memory.yRegister) {
-        memory.yRegister=memory.xRegister
-        memory.xRegister=""
-    }
+    //memory input
+    inputNumber: number => {
+        let memoryStatus = operations.memoryStatus()
+        if (memory.getFlag() == "clear") {
+            memory.clear()
+        } 
+        //verify the need of a shift (xRegister to yRegister)
+        if( memoryStatus[0] && !memoryStatus[2] ) {
+            memory.setY(memory.getX())
+            memory.setX(0)
+        } 
+        let xRegisterString = memory.getX().toString()
+        xRegisterString = xRegisterString.concat(number)
+        newXRegister = parseFloat(xRegisterString)
 
-    if (memory.xRegister.toString().length < 8) {
-        data = memory.xRegister.toString().concat(data)
-            memory.xRegister = parseInt(data)
+        //verify  if there is room for a new input
+        if (newXRegister.toString().length <= memory.getDisplayLimit()){
+            memory.setX(newXRegister)
         }
     },
-
-    inputFlag:data => {
-        if (memory.flag) {
-            memory.xRegister = operations.equals(memory.flag,memory.yRegister,memory.xRegister)
-            memory.yRegister = ""
-            memory.flag=""
+    inputFlag: flag => {
+        //verify is there is other flag set, and if so, 
+        let memoryStatus = operations.memoryStatus()
+        if(memoryStatus[0] && memoryStatus[2]) {
+            operations.equals()
         }
-        if(data!="equals") {
-            memory.flag=data
-        }
-        
+        memory.setFlag(flag)
     },
+    
+    // equals
+    equals:() => {
+        let temp = memory.setX(memory.getFlag() ? operations[memory.getFlag()](memory.getY(),memory.getX()) : memory.getX())
+        memory.clear()
+        temp = temp.toString()
+        if (temp.length <= memory.getDisplayLimit()) {
+            operations.inputNumber(temp.toString())
+            memory.setFlag("clear")
+        } else {//erro
+        }
+    },
+    // clear
+    clear:() => memory.clear(),
+    
+    // backspace
+    backspace: () => {
+        let temp = memory.getX().toString()
 
-    memoryInput:(data,type) => {
-        if (type == "number") {
-            memory.inputNumber(data)
-        }
-        if (type == "operation") {
-            memory.inputFlag(data)
-        }
-        if (type == "command") {
-            memory.command (data)
-        }
-
-        displayInput(memory.xRegister,display)
+        if( (temp.length != 0 && !memory.getFlag()) || (memory.getY() != 0 && memory.getFlag()) ) {
+            temp = temp.substring(0,temp.length-1)
+            memory.setX(0)
+            operations.inputNumber(temp)
+        }  
+    },
+    
+    // invert
+    invert: () => {
+        let temp = memory.getX() * -1
+        memory.setX(temp)
+    },
+    
+    // dot (.) operator
+    decimal: () => {
+        //not implemented yet
+    },
+    
+    // screen printing
+    displayInput:(input, display) => {
+        display.innerHTML = input
     }
 }
 
 
-const displayInput = (input, display) => {
-    display.innerHTML = input
-}
 
 keys = document.querySelectorAll(".number, .command, .operation")
-
 keys.forEach(key => {
     key.onclick = event => {
-        memory.memoryInput(key.id,key.className)
+        operations.input(key.id,key.className)
     }
 })
