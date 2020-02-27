@@ -60,7 +60,7 @@ body {
 }
 
 #keyboard {
-    background-color:orange;
+    background-color:#aaa;
 }
 
 .command, .number, .operation {
@@ -93,6 +93,10 @@ body {
 
 .operation {
     background-color: tomato;
+}
+
+.number {
+    background-color:orange;
 }
 
 .command:hover, .number:hover, .operation:hover, #equals:hover {
