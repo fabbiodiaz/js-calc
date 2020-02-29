@@ -46,6 +46,16 @@ const updateDisplay = input => {
     }
     display.innerHTML = finalInput
 }
+commandButtons = [...document.getElementsByClassName('command')]
+commandButtons.forEach(button => button.onclick = event => {
+    memory[button.id](memory.xRegister)
+    updateDisplay(memory.xRegister)
+})
+operationButtons = [...document.getElementsByClassName('operation')]
+operationButtons.forEach(button => button.onclick = event => {
+    memory.InputFlag(button.id)
+    updateDisplay(memory.xRegister)
+})
 
 const memory = {
     xRegister:'',
@@ -104,9 +114,12 @@ const memory = {
         memory.dataShift()
         // if the input is a decimal dot and the number already have one decimal dot, just ignore
         if (data == '.' && memory.isDecimal(memory.xRegister)) return
-        // if the resultant input is zero, ignore tne input 
+        // if the resultant input is zero, ignore tne input and set xRegister as '0'
         // (it will not apply with zeros at the right of a decimal dot)
-        if (!memory.isDecimal(memory.xRegister) && memory.isNullValue(memory.xRegister.concat(data)) && data == '0') return 
+        if (!memory.isDecimal(memory.xRegister) && memory.isNullValue(memory.xRegister.concat(data)) && data == '0') {
+            memory.xRegister = '0'
+            return
+        } 
         // Case xRegister is zero ('') and 'decimal' is pressed, the input mut be with a '0' before it
         if (memory.xRegister == '' && data == '.') data = '0.'
         // if the number of digits of the stored number is equals to the memory limit, ignore the entry
@@ -143,7 +156,7 @@ const memory = {
     equals: () => {
         memory.dataShift()
         if (memory.xRegister == '') {
-            memory.xRegister = memory.neutralElements[memory.flag]
+            memory.xRegister = memory.neutralElements[memory.flag] || ''
         }
         if(memory.flag) {
             memory.xRegister = memory.solve(memory.flag,memory.xRegister,memory.yRegister)
@@ -163,7 +176,6 @@ const memory = {
     InputFlag: (flag) => {
         if (memory.flag != 'equals' ) {memory.equals()}
         memory.flag = flag
+        if (memory.xRegister == '') {memory.xRegister = '0'}
     },
-    
 }
-
