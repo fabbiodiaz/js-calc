@@ -33,4 +33,4 @@ O CSS foi utilizado para dar forma aos componentes e garantir a responsividade. 
 
 * *HTML*
 
-O esquema da página consiste num background escuro, onde são dispostos os componentes da aplicação (displal, botoês) e um footer com um link que nos leva ao repositório do projeto no GitHub.
+O esquema da página consiste num background escuro, onde são dispostos os componentes da aplicação (displal, botões) e um footer com um link que leva ao repositório do projeto no GitHub.
