@@ -46,7 +46,7 @@ body {
     box-sizing: border-box;
     padding: 0px calc(0.1 * var(--block));
     justify-content: flex-end;
-    font-size: calc(0.78 * var(--block));
+    font-size: calc(0.7 * var(--block));
     font-family: 'Oxanium';
     
     /* texto não selecionável */
@@ -63,7 +63,7 @@ body {
     background-color:#aaa;
 }
 
-.command, .number, .operation {
+.command, .input, .operation {
     display:inline-flex;
     align-items: center;
     justify-content: center;
@@ -95,11 +95,11 @@ body {
     background-color: tomato;
 }
 
-.number {
+.input {
     background-color:orange;
 }
 
-.command:hover, .number:hover, .operation:hover, #equals:hover {
+.command:hover, .input:hover, .operation:hover, #equals:hover {
     background-color: plum;
 }
 
@@ -118,6 +118,6 @@ footer a {
     font-weight: bold;
 
 }
-a:visited {
+a, a:visited {
     color: #fff;
 }

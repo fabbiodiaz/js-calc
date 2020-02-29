@@ -1,164 +1,162 @@
-//default display
-const display = document.getElementById("display")
-
-// Random acess memory
-// Registers : float point numbers, only 8 digits or less are avaliable
-// flag : String
-const memory = { flag:null, xRegister:"0", yRegister:"0", displayLimit:999, decimalInput:false,
-
-    getFlag: () => memory.flag,
-    setFlag: flag => memory.flag = flag,
-    getX: () => memory.xRegister,
-    setX: newX => memory.xRegister = newX,
-    getY: () => memory.yRegister,
-    setY: newY => memory.yRegister = newY,
-    getDisplayLimit: () => memory.displayLimit,
-    setDisplayLimit: newDisplayLimit => displayLimit = newDisplayLimit,
-    getDecimalInput: () => memory.decimalInput,
-    setDecimalInput: decimalInput => memory.decimalInput = decimalInput,
-    clear:() => {
-        memory.flag = null
-        memory. xRegister = "0"
-        memory.yRegister = "0"
-    },
-
-}
-
-//default operations
-operations = {
-    
-    // data reciever
-    input:(data,type) => {
-        if (type == "number") {
-            operations.inputNumber(data)
-        }
-        if (type == "operation") {
-            operations.inputFlag(data)
-        }
-        if (type == "command") {
-            operations[data]()
-        }
-        operations.displayInput(memory.getX(),display)
-    },
-    
-    // aux functions
-    memoryStatus: () => [!!memory.getFlag(),!!parseInt(memory.getX()),!!parseInt(memory.getY())],
-    memoryUsage: () => [!!memory.getFlag(), memory.getX().toString().length, memory.getY().toString().length],
-    removeZeros: input => {
-        let inputArr = input.split("")
-        let firstSignificantDigitIndex = 0
-        let lastSignificantDigitIndex = input.length
-        let findSignificantZero = false
-        for (let i=0 ; i < input.length ; i++) {
-            if (inputArr[i] == ".") findSignificantZero = true
-            if (inputArr[i] == "0") {
-                firstSignificantDigitIndex = i+1
-            } else {break}
-        }
-        for (let i=input.length-1 ; i != 0 ; i--) {
-            if (inputArr[i] == "0" || inputArr[i] == "." && !findSignificantZero) {
-                lastSignificantDigitIndex = i
-            } else {break}
-        }
-        let output = input.substring(firstSignificantDigitIndex,lastSignificantDigitIndex)
-        return findSignificantZero ? "0".concat(output) : output
-        
-    },
-
-    
-    // arithimetic operations
-    plus:(firstNum,secondNum) => firstNum + secondNum,
-    minimus: (firstNum,secondNum) => firstNum - secondNum,
-    mult: (firstNum,secondNum) => firstNum * secondNum,
-    divide: (firstNum,secondNum) => firstNum / secondNum,
-    
-    //memory input
-    inputNumber: (number,acceptZero=false) => {
-        //verify is there is some done operation result in memory
-        if (memory.getFlag() == "clear") {
-            memory.clear()
-        } 
-        //verify the need of a shift (xRegister to yRegister)
-        let memoryStatus = operations.memoryStatus()
-        if( memoryStatus[0] && !memoryStatus[2] && memory.getX() != "0.") {
-            memory.setY(operations.removeZeros(memory.getX()))
-            memory.setX("0")
-        } 
-        let xRegister = memory.getX()
-        xRegister = xRegister.concat(number)
-
-        //remove unecessary zeros
-        xRegister = operations.removeZeros(xRegister)
-
-        //verify  if there is room for a new input
-        if (xRegister.length <= memory.getDisplayLimit()){
-            memory.setX(xRegister)
-        }
-    },
-    
-    inputFlag: flag => {
-        //verify is there is other flag set, and if so, erease it or solve the operation
-        let memoryStatus = operations.memoryStatus()
-        if(memoryStatus[0] && memoryStatus[2]) {
-            operations.equals()
-        }
-        memory.setFlag(flag)
-    },
-    
-    // equals
-    equals:() => {
-        let result = memory.setX(memory.getFlag() ? operations[memory.getFlag()](parseFloat(memory.getY()),parseFloat(memory.getX())) : parseFloat(memory.getX()))
-        memory.clear()
-        //converts the number to integer or to the shorterst (length) decimal
-        result = result.toFixed(3)
-        operations.inputNumber(operations.removeZeros(result))
-        memory.setFlag("clear")
-    },
-    
-    // clear
-    clear:() => memory.clear(),
-    
-    // backspace
-    backspace: () => {
-        let number = memory.getX()
-        
-        if( (number.length != 0 && !memory.getFlag()) || (memory.getY() != 0 && memory.getFlag()) ) {
-            number = number.substring(0,number.length-1)
-            memory.setX("0")
-            operations.inputNumber(number)
-        }  
-        if (memory.getFlag() == "clear") {operations.clear()}
-    },
-    
-    // invert
-    invert: () => {
-        let number = memory.getX()
-        number = number == "0" ? "0" : parseFloat(number) * -1
-        memory.setX(number.toString())
-    },
-    
-    // dot (.) operator
-    decimal: () => {
-        let memoryUsage = operations.memoryUsage()
-        //define if it needs a additional zero input
-        if ( !memoryUsage[0] && !memoryUsage[1] || memoryUsage[0] && !memoryUsage[2] || memory.getFlag() == "clear") {
-            operations.inputNumber("0.")
-        } else {
-            operations.inputNumber(".")
-        }
-    },
-    
-    // screen printing
-    displayInput:(input, display) => {
-        display.innerHTML = input
-    }
-}
-
-
-
-keys = document.querySelectorAll(".number, .command, .operation")
-keys.forEach(key => {
-    key.onclick = event => {
-        operations.input(key.id,key.className)
-    }
+// catch the button elements and set a function to the event 'onclick'
+inputButtons = [...document.getElementsByClassName('input')]
+inputButtons.forEach(button => button.onclick = event => {
+    memory.inputData(button.id)
+    updateDisplay(memory.xRegister)
 })
+// set the same event to the decimal button, but with a literal '.' as parameter
+decimalButton = document.getElementById('decimal')
+decimalButton.onclick = event => {
+    memory.inputData('.')
+    updateDisplay(memory.xRegister)
+}
+// set the function memory.clear() to the 'CE' button
+clearButton = document.getElementById('clear')
+clearButton.onclick = event => {
+    memory.clear()
+    updateDisplay(memory.xRegister)
+}
+// set the function memory.backspace() to the 'backspace' button
+clearButton = document.getElementById('backspace')
+clearButton.onclick = event => {
+    memory.backspace()
+    updateDisplay(memory.xRegister)
+}
+commandButtons = [...document.getElementsByClassName('command')]
+commandButtons.forEach(button => button.onclick = event => {
+    memory[button.id](memory.xRegister)
+    updateDisplay(memory.xRegister)
+})
+operationButtons = [...document.getElementsByClassName('operation')]
+operationButtons.forEach(button => button.onclick = event => {
+    memory.InputFlag(button.id)
+    updateDisplay(memory.xRegister)
+})
+
+//set default display
+const display = document.getElementById("display")
+const updateDisplay = input => {
+    // if the value is a empty string value, display '0'
+    display.innerHTML = input == '' ? '0' : input
+}
+
+const memory = {
+    xRegister:'',
+    yRegister:'',
+    flag:'',
+    memoryLimit:8,
+    neutralElements:{
+        plus:0,
+        minimus:0,
+        mult:1,
+        divide:1,
+    },
+    // aux functions
+    
+    // verify if a input number string is a representation of a decimal value (if it have a decimal dot '.')
+    isDecimal:(numberStr) => numberStr.split('').filter(char => char == '.').length > 0 ,
+    // returns the cont of numeral digits in a number string (ignores '-' and '.')
+    countDigits:(numberStr) => numberStr.split('').filter(char => char != '.' && char != '-').length ,
+    // decides if the input is a null number ('0', '0.' '0.0...0' or '.0...0')
+    isNullValue:(numberStr) => numberStr.split('.').filter(value => parseInt(value) != 0 && value !='' && value != '-').length == 0 ,
+    stringParser:string => parseFloat(string == '' ? '0' : string),
+    // operations solver
+    solve:(flag,xVal,yVal) => memory.removeZeros(
+        memory[flag](
+            memory.stringParser(xVal),
+            memory.stringParser(yVal)
+            ).toFixed(3)),
+    // remove nom significant zeros at the ond of the number
+    removeZeros: numberStr => {
+        // search for non-significant zeros at the ond of the number
+        for (let i=numberStr.length-1 ; i !=0 ; i--) {
+            if(numberStr.substring(i,numberStr.length) == '0') {
+                numberStr = numberStr.substring(0,numberStr.length-1)
+            } else {break}
+        }
+        // if it ends with a '.', remove it
+        if (numberStr.substring(numberStr.length-1,numberStr.length) == '.') {
+            numberStr = numberStr.substring(0,numberStr.length -1)
+        }
+        return numberStr
+    },
+    // operation for menage the data shifting
+    dataShift: () => {
+        // 
+        if (memory.flag != '' && memory.yRegister == '') {
+            memory.yRegister = memory.xRegister
+            memory.xRegister = ''
+        }
+    },
+    
+    // default input data function
+    inputData: (data) => {
+        // if the number is a result of a previous operation, ignore the input
+        if (memory.flag == 'equals') return
+        // verify data shifting
+        memory.dataShift()
+        // if the input is a decimal dot and the number already have one decimal dot, just ignore
+        if (data == '.' && memory.isDecimal(memory.xRegister)) return
+        // if the resultant input is zero, ignore tne input 
+        // (it will not apply with zeros at the right of a decimal dot)
+        if (!memory.isDecimal(memory.xRegister) && memory.isNullValue(memory.xRegister.concat(data)) && data == '0') return 
+        // Case xRegister is zero ('') and 'decimal' is pressed, the input mut be with a '0' before it
+        if (memory.xRegister == '' && data == '.') data = '0.'
+        // if the number of digits of the stored number is equals to the memory limit, ignore the entry
+        if (memory.countDigits(memory.xRegister) == memory.memoryLimit) return
+        // if everythig's alright, concat the input data with the stored value
+        memory.xRegister = memory.xRegister.concat(data)
+    },
+    
+    // command buttons functions
+    clear:() => [memory.xRegister,memory.yRegister,memory.flag] = ['','',''],
+    
+    backspace: () => {
+        // if the xRegister is the result of a previous operation, ignore
+        if (memory.flag == 'equals') return
+        // if xRegister is null, don't do anything
+        if (memory.xRegister.length == 0) return 
+        // backspace
+        memory.xRegister = memory.xRegister.substring(0,memory.xRegister.length-1)
+        // if the resulting xRegister is '-', erease it
+        if (memory.xRegister == '-') {memory.xRegister = ''}
+        // if the resulting xRegister is '-0.' or '0.', erease it
+        if (memory.xRegister == '-0.' || memory.xRegister == '0.') {memory.xRegister = ''}
+    },
+    
+    invert: () => {
+        // if xRegister is null, don't do anything
+        if (memory.isNullValue(memory.xRegister)) return 
+        // if it already is a negative number, remove it. if not, add a '-' in the beggining of the string
+        memory.xRegister.split('').indexOf('-') == 0 ? 
+        memory.xRegister = memory.xRegister.substring(1,memory.xRegister.length) :
+        memory.xRegister = '-'.concat(memory.xRegister)
+    },
+    
+    equals: () => {
+        memory.dataShift()
+        if (memory.xRegister == '') {
+            memory.xRegister = memory.neutralElements[memory.flag]
+        }
+        if(memory.flag) {
+            memory.xRegister = memory.solve(memory.flag,memory.xRegister,memory.yRegister)
+            memory.flag = 'equals'
+            memory.yRegister=''
+        }
+
+    },
+
+    // operation functions ( called only by memory.equals() )
+    plus:(xReg,yReg) => yReg + xReg,
+    minimus:(xReg,yReg) => yReg - xReg,
+    mult:(xReg,yReg) => yReg * xReg,
+    divide:(xReg,yReg) => yReg / xReg,
+    
+    // operations common function
+    InputFlag: (flag) => {
+        if (memory.flag != 'equals' ) {memory.equals()}
+        memory.flag = flag
+    },
+    
+}
+
