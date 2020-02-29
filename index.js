@@ -35,9 +35,16 @@ operationButtons.forEach(button => button.onclick = event => {
 
 //set default display
 const display = document.getElementById("display")
+
+//display update function
 const updateDisplay = input => {
-    // if the value is a empty string value, display '0'
-    display.innerHTML = input == '' ? '0' : input
+    // if the value is a empty string value, or any error value, display '0'
+    let finalInput = input == '' || !input ? '0' : input
+    if (memory.countDigits(finalInput) > memory.memoryLimit) {
+        finalInput = 'err'
+        memory.clear()
+    }
+    display.innerHTML = finalInput
 }
 
 const memory = {
@@ -59,7 +66,7 @@ const memory = {
     countDigits:(numberStr) => numberStr.split('').filter(char => char != '.' && char != '-').length ,
     // decides if the input is a null number ('0', '0.' '0.0...0' or '.0...0')
     isNullValue:(numberStr) => numberStr.split('.').filter(value => parseInt(value) != 0 && value !='' && value != '-').length == 0 ,
-    stringParser:string => parseFloat(string == '' ? '0' : string),
+    stringParser:string => parseFloat(string == '' || !string ? '0' : string),
     // operations solver
     solve:(flag,xVal,yVal) => memory.removeZeros(
         memory[flag](
